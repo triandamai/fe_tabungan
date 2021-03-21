@@ -1,115 +1,179 @@
-type httpcode = 200 | 201 | 400 | 500 | 404 | 900;
-type contenttype = "urlencoded" | "json" | "form-data";
+import axios from "axios";
+import { BaseType, IDeposit, IProfile, ISavings, IUser } from "./Type";
 
-interface IResult {
-  success: boolean;
-  code?: httpcode;
-  data?: IResponse;
-}
 interface IResponse {
-  code?: httpcode;
-  data: Array<any>;
+  success: boolean;
+  data: any;
   message?: string;
 }
 class Service {
-  BASE_URL = "http://localhost:4000";
-  get(param: { path: string }): Promise<IResult> {
+  BASE_URL = /*"https://trianapp.herokuapp.com";*/ "http://localhost:3000";
+
+  get(path: string): Promise<IResponse> {
     return new Promise((resolve) => {
-      fetch(this.BASE_URL + param.path, {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((result: IResponse) => {
-          //  console.log(result);
-          if (result.code == 200 || result.code == 201)
-            resolve({ success: true, code: result.code, data: result });
-          else resolve({ success: false, code: result.code, data: result });
+      axios
+        .get(path)
+        .then((response) => {
+          if (
+            response.data.statusCode == 200 ||
+            response.data.statusCode == 201
+          ) {
+            resolve({
+              success: true,
+              data: response.data.data,
+              message: response.data.message,
+            });
+          } else {
+            resolve({
+              success: false,
+              data: [],
+              message: response.data.message,
+            });
+          }
         })
         .catch((error) => {
-          resolve({ success: false, data: error, code: 900 });
+          resolve({ success: false, data: error, message: `${error}` });
         });
     });
   }
-  post(param: {
-    path: string;
-    body: any;
-    type: contenttype;
-  }): Promise<IResult> {
+  post(path: string, param: any): Promise<IResponse> {
     return new Promise((resolve) => {
-      let request;
-      switch (param.type) {
-        case "json":
-          request = fetch(this.BASE_URL + param.path, {
-            body: param.body,
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-
-          break;
-        case "form-data":
-          request = fetch(this.BASE_URL + param.path, {
-            body: param.body,
-            method: "POST",
-          });
-          break;
-        case "urlencoded":
-          request = fetch(this.BASE_URL + param.path, {
-            body: param.body,
-            method: "POST",
-            headers: {
-              "Content-Type": "application/application/x-www-form-urlencoded",
-            },
-          });
-
-          break;
-      }
-
-      request
-        .then((res) => res.json())
-        .then((result: IResponse) => {
-          if (result.code == 200 || result.code == 201)
-            resolve({ success: true, code: 200, data: result });
-          else resolve({ success: false, code: 400, data: result });
+      axios
+        .post(`${this.BASE_URL}${path}`, param, {
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .catch((error) => {
-          resolve({ success: false, data: error, code: 900 });
-        });
+        .then((response) => {
+          if (
+            response.data.statusCode == 200 ||
+            response.data.statusCode == 201
+          ) {
+          } else {
+            resolve({
+              success: false,
+              data: [],
+              message: response.data.message,
+            });
+          }
+        })
+        .catch((error) => {});
     });
-  }
-  put(param: { path: string; body: any }): Promise<IResult> {
-    return new Promise((resolve) => {});
   }
 
-  login(body: any): Promise<IResult> {
+  /**
+   *
+   * @param body
+   * @returns
+   */
+  login(body: any): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
-      this.post({
-        path: "/api/login",
-        body: body,
-        type: "json",
-      }).then((result: IResult) => {
+      this.post("/user/login", body).then((result: IResponse) => {
         if (result.success) {
-          this.saveUser(result.data?.data[0]);
+          const data: BaseType<IUser> = result.data;
+          this.saveUser(data.data[0]);
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve({ success: false, data: [] });
         }
-        resolve(result);
       });
     });
   }
-  register(body: any): Promise<IResult> {
+  /**
+   *
+   * @param body
+   * @returns
+   */
+  register(body: any): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
-      this.post({
-        path: "/api/register",
-        body: body,
-        type: "json",
-      }).then((result) => {
+      this.post("/user/register", body).then((result) => {
         if (result.success) {
-          this.saveUser(result.data?.data);
+          const data: BaseType<IUser> = result.data;
+          this.saveUser(data.data[0]);
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve(result);
         }
-        resolve(result);
       });
     });
   }
+  /**
+   *
+   * @param path
+   * @returns
+   */
+  getProfil(path: string): Promise<BaseType<IProfile>> {
+    return new Promise((resolve) => {
+      this.get(path).then((result: IResponse) => {
+        if (result.success) {
+          const data: BaseType<IProfile> = result.data;
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve({ success: false, data: [] });
+        }
+      });
+    });
+  }
+
+  /**
+   *
+   * @param path
+   * @returns
+   */
+  getMySaving(path: string): Promise<BaseType<ISavings>> {
+    return new Promise((resolve) => {
+      this.get(path).then((result: IResponse) => {
+        if (result.success) {
+          const data: BaseType<ISavings> = result.data;
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve({ success: false, data: [] });
+        }
+      });
+    });
+  }
+  /**
+   *
+   * @param path
+   * @param body
+   * @returns
+   */
+  createSaving(path: string, body: any): Promise<BaseType<ISavings>> {
+    return new Promise((resolve) => {
+      this.post(path, body).then((result: IResponse) => {
+        if (result.success) {
+          const data: BaseType<ISavings> = result.data;
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve({ success: false, data: [] });
+        }
+      });
+    });
+  }
+  /**
+   *
+   * @param path
+   * @returns
+   */
+  getMyDeposit(path: string): Promise<BaseType<IDeposit>> {
+    return new Promise((resolve) => {
+      this.get(path).then((result: IResponse) => {
+        if (result.success) {
+        } else {
+        }
+      });
+    });
+  }
+
+  createDeposit(path: string, body: any): Promise<BaseType<IDeposit>> {
+    return new Promise((resolve) => {
+      this.post(path, body).then((result: IResponse) => {});
+    });
+  }
+  /**
+   *
+   * @param data
+   */
 
   saveUser(data: any) {
     window.sessionStorage.setItem("zZZaAbB", data);

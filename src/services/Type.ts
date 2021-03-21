@@ -1,0 +1,45 @@
+export interface BaseType<Types> {
+  success: boolean;
+  data: Array<Types>;
+}
+export interface IProfile {
+  user: IUser;
+  saving: ISavings;
+  count: Array<ICount>;
+}
+export interface ICount {
+  savingId: string;
+  total: Number;
+}
+export interface IUser {
+  _id: string;
+  uid: string;
+  name: string;
+  email: string;
+  password: string;
+  gender: string;
+  createdAt: Number;
+  updatedAt: Number;
+}
+export interface ISavings {
+  _id: string;
+  savingId: string;
+  userId: string;
+  description: string;
+  createdBy: string;
+  createdAt: Number;
+  updatedAt: Number;
+}
+export interface IDeposit {
+  _id: string;
+  sender: string;
+  savingId: string;
+  nominal: Number;
+  receipt: string;
+  accepted: string;
+  type: string;
+  receiptname: string;
+  description: string;
+  createdAt: Number;
+  updatedAt: Number;
+}

@@ -40,9 +40,7 @@ const UserState = reactive<IUserState>({
 function useUser() {
   function startAuthGoogle() {
     UserState.isProgressing = true;
-    const provider = new firebase.auth.GoogleAuthProvider().addScope(
-      "https://www.googleapis.com/auth/user.gender.read"
-    );
+    const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithRedirect(provider);
   }
   async function startLoginBasic() {
@@ -66,21 +64,20 @@ function useUser() {
     UserState.isProgressing = false;
     if (user)
       if (additionalUserInfo?.isNewUser) {
-        const { success, data } = await apiServices.register(
-          JSON.stringify({
-            email: user.email,
-            name: user.displayName,
-            gender: "laki-laki",
-            uid: user.uid,
-            password: user.uid,
-          })
-        );
+        const { success, data } = await apiServices.register({
+          email: user.email,
+          name: user.displayName,
+          gender: "laki-laki",
+          uid: user.uid,
+          password: user.uid,
+        });
         UserState.authSuccess = success;
         if (success) router.push({ path: "/main/dashboard" });
       } else {
-        const { success, data } = await apiServices.login(
-          JSON.stringify({ email: user.email, password: user.uid })
-        );
+        const { success, data } = await apiServices.login({
+          email: user.email,
+          password: user.uid,
+        });
         UserState.authSuccess = success;
         if (success) router.push({ path: "/main/dashboard" });
       }
@@ -89,11 +86,9 @@ function useUser() {
 
   function getProfil() {
     getCurrentUser().then(async (user: any) => {
-      const { success, data } = await apiServices.get({
-        path: "/api/user/order/" + user.uid,
-      });
-      //   console.log(data);
-      if (success) if (data) UserState.profil = data.data[0];
+      const { success, data } = await apiServices.get(
+        "/api/user/order/" + user.uid
+      );
     });
   }
 

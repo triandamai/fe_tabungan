@@ -14,7 +14,19 @@ const router = createRouter({
       component: () => import("./pages/Home.vue"),
       meta: {
         requireAuth: true,
+        title: "Home Page - Tabungan App",
+        metaTags: [
+          {
+            name: "description",
+            content: "The home page of our example app.",
+          },
+          {
+            property: "og:description",
+            content: "The home page of our example app.",
+          },
+        ],
       },
+
       children: [
         {
           path: "",
@@ -24,16 +36,25 @@ const router = createRouter({
           path: "dashboard",
           name: "Dashboard",
           component: () => import("./pages/home/Dashboard.vue"),
+          meta: {
+            title: "Beranda",
+          },
         },
         {
           path: "history",
           name: "History",
           component: () => import("./pages/home/History.vue"),
+          meta: {
+            title: "Daftar Tabungan",
+          },
         },
         {
           path: "profil",
           name: "Profil",
           component: () => import("./pages/home/Profil.vue"),
+          meta: {
+            title: "Profil Saya",
+          },
         },
       ],
     },
@@ -41,6 +62,9 @@ const router = createRouter({
       path: "/detail/:id",
       name: "Detail",
       component: () => import("./pages/DetailDeposit.vue"),
+      meta: {
+        title: "Detail Tabungan",
+      },
     },
     {
       path: "/deposit",
@@ -48,12 +72,36 @@ const router = createRouter({
       component: () => import("./pages/Deposit.vue"),
       meta: {
         requireAuth: true,
+        title: "Home Page - Tabungan App",
+        metaTags: [
+          {
+            name: "description",
+            content: "The home page of our example app.",
+          },
+          {
+            property: "og:description",
+            content: "The home page of our example app.",
+          },
+        ],
       },
     },
     {
       path: "/login",
       name: "Login",
       component: () => import("./pages/Login.vue"),
+      meta: {
+        title: "Home Page - Tabungan App",
+        metaTags: [
+          {
+            name: "description",
+            content: "The home page of our example app.",
+          },
+          {
+            property: "og:description",
+            content: "The home page of our example app.",
+          },
+        ],
+      },
     },
   ],
 });
