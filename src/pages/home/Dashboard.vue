@@ -21,12 +21,12 @@
         <h1 class="mx-2">Total Tabungan</h1></span
       >
       <h1 class="text-4xl font-semibold">
-        {{ format(TabunganState.amountDeposit, "RP") }}
+        {{ format(userState.count.total, "RP") }}
       </h1>
     </div>
     <h1 class="text-white">Transaksi</h1>
     <no-data
-      v-if="TabunganState.tabungans.length < 1"
+      v-if="depositState.listdeposit.length < 1"
       :title="'Belum ada apapun'"
       :text="'karena kamu belum mulai menabung apapun yuk mulai nabung..'"
       :button="'Mulai nabung'"
@@ -34,7 +34,7 @@
     />
     <div v-else class="pb-20">
       <card-transaction
-        v-for="(item, index) in TabunganState.tabungans"
+        v-for="(item, index) in depositState.listdeposit"
         :key="index"
         :tabungan="item"
       />
@@ -42,13 +42,14 @@
   </section>
 </template>
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted } from "vue";
+import { defineComponent, onMounted } from "vue";
 
-import { useTabungan } from "../../data/TabunganState";
+import { useTabungan } from "../../data/SavingState";
 import { useCurrency } from "../../common/Currency";
 
 import CardTransaction from "../../components/CardTransaction.vue";
 import NoData from "../../components/NoData.vue";
+import { useUser } from "../../data/UserState";
 
 export default defineComponent({
   components: {
@@ -63,6 +64,7 @@ export default defineComponent({
     return {
       ...useTabungan(),
       ...useCurrency(),
+      ...useUser(),
     };
   },
 });

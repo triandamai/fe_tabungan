@@ -44,7 +44,7 @@
         </ul>
         <button
           v-show="
-            tabungan.sender != UserState.profil.uid &&
+            tabungan.sender != userState.profil.uid &&
             tabungan.accepted.length < 1
           "
           @click="verifikasiDeposit"
@@ -102,7 +102,7 @@ import { defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useUser } from "../data/UserState";
 
-import { useTabungan, ITabungan } from "../data/TabunganState";
+import { useTabungan } from "../data/SavingState";
 import { useCurrency } from "../common/Currency";
 
 import BaseDialog from "../components/DialogBase.vue";
@@ -111,6 +111,7 @@ import IconFailed from "../components/icon/NotFound.vue";
 import IconSuccess from "../components/icon/Transfer.vue";
 import DialogLoading from "../components/DialogLoading.vue";
 import NoData from "../components/NoData.vue";
+import { IDeposit } from "../services/Type";
 
 export default defineComponent({
   components: {
@@ -123,22 +124,24 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const { getProfil, UserState } = useUser();
+    const { getProfil, userState } = useUser();
     const { getDepositById, acceptDeposit } = useTabungan();
-    const tabungan = ref<ITabungan>({
+    const tabungan = ref<IDeposit>({
+      _id: "",
       sender: "",
-      nominal: "",
+      nominal: 0,
+      savingId: "",
       receipt: "",
       receiptname: "",
       accepted: "",
       description: "",
-      tabungantype: "deposit",
-      created: 0,
-      updated: 0,
+      type: "deposit",
+      createdAt: 0,
+      updatedAt: 0,
     });
     const noData = ref(false);
     function verifikasiDeposit() {
-      acceptDeposit(UserState.profil.uid, tabungan.value._id);
+      acceptDeposit(userState.profil.uid, tabungan.value._id);
     }
     onMounted(() => {
       getProfil();
@@ -149,13 +152,13 @@ export default defineComponent({
         } else {
           noData.value = true;
         }
-        console.log(tabungan.value.sender != UserState.profil.uid);
+        console.log(tabungan.value.sender != userState.profil.uid);
         console.log(tabungan.value.accepted == "");
       });
     });
 
     return {
-      UserState,
+      userState,
       route,
       verifikasiDeposit,
       ...useTabungan(),

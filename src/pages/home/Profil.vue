@@ -74,11 +74,6 @@ import { useUser } from "../../data/UserState";
 
 export default defineComponent({
   setup() {
-    const { getProfil } = useUser();
-    onMounted(() => {
-      getProfil();
-    });
-
     return {
       ...useUser(),
     };

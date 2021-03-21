@@ -57,7 +57,7 @@
                   </svg>
                   <input
                     type="number"
-                    v-model="TabunganState.formtabungan.nominal"
+                    v-model="depositState.formtabungan.nominal"
                     placeholder="Rp 10.000.00"
                     class="w-full focus:outline-none text-base font-light"
                     autocomplete
@@ -90,7 +90,7 @@
                   </svg>
                   <input
                     type="text"
-                    v-model="TabunganState.formtabungan.description"
+                    v-model="depositState.formtabungan.description"
                     placeholder="Buat masa depan"
                     class="w-full focus:outline-none text-base font-light"
                     autocomplete
@@ -99,7 +99,7 @@
                   />
                 </div>
               </div>
-              <div class="mt-4">
+              <!-- <div class="mt-4">
                 <label class="block text-lg font-medium" style="color: #d8d7df"
                   >Struk</label
                 >
@@ -143,7 +143,7 @@
                     style="background-color: #252332"
                   />
                 </div>
-              </div>
+              </div> -->
 
               <button
                 type="submit"
@@ -210,7 +210,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useTabungan } from "../data/TabunganState";
+import { useTabungan } from "../data/SavingState";
 
 import BaseDialog from "../components/DialogBase.vue";
 import DialogResult from "../components/DialogResult.vue";

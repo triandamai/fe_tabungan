@@ -10,6 +10,8 @@ import {
 
 class Service {
   BASE_URL = /*"https://trianapp.herokuapp.com";*/ "http://localhost:3000";
+  KEY_USER = "zzaAbB";
+  KEY_SAVING = "sSaAvViInNgG";
 
   get(path: string): Promise<IResponse> {
     return new Promise((resolve) => {
@@ -106,7 +108,7 @@ class Service {
       this.post("/user/register", body).then((result: IResponse) => {
         if (result.success) {
           const data: BaseType<IUser> = result.data;
-          console.log(data);
+
           this.saveUser(data.data[0]);
           resolve({ success: true, data: data.data });
         } else {
@@ -125,6 +127,8 @@ class Service {
       this.get(path).then((result: IResponse) => {
         if (result.success) {
           const data: BaseType<IProfile> = result.data;
+          if (data.data[0].saving)
+            this.saveSaving(data.data[0].saving.savingId);
           resolve({ success: true, data: data.data });
         } else {
           resolve({ success: false, data: [] });
@@ -177,7 +181,27 @@ class Service {
     return new Promise((resolve) => {
       this.get(path).then((result: IResponse) => {
         if (result.success) {
+          const data: BaseType<IDeposit> = result.data;
+          resolve({ success: true, data: data.data });
         } else {
+          resolve({ success: false, data: [] });
+        }
+      });
+    });
+  }
+  /**
+   *
+   * @param path
+   * @returns
+   */
+  getDepositById(path: string): Promise<BaseType<IDeposit>> {
+    return new Promise((resolve) => {
+      this.get(path).then((result: IResponse) => {
+        if (result.success) {
+          const data: BaseType<IDeposit> = result.data;
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve({ success: false, data: [] });
         }
       });
     });
@@ -200,17 +224,33 @@ class Service {
       });
     });
   }
+  confirmationDeposit(path: string, body: any): Promise<BaseType<IDeposit>> {
+    return new Promise(() => {});
+  }
   /**
    *
    * @param data
    */
 
   saveUser(data: any) {
-    window.sessionStorage.setItem("zZZaAbB", data);
+    window.sessionStorage.setItem(this.KEY_USER, JSON.stringify(data));
   }
   getUser() {
-    return window.sessionStorage.getItem("zZZaAbB");
+    const data: any =
+      window.sessionStorage.getItem(this.KEY_USER) == null
+        ? "{}"
+        : window.sessionStorage.getItem(this.KEY_USER);
+    return JSON.parse(data);
+  }
+  saveSaving(saving: any) {
+    window.sessionStorage.setItem(this.KEY_SAVING, JSON.stringify(saving));
+  }
+  getSaving() {
+    const data: any =
+      window.sessionStorage.getItem(this.KEY_SAVING) == null
+        ? "{}"
+        : window.sessionStorage.getItem(this.KEY_SAVING);
+    return JSON.parse(data);
   }
 }
 export default new Service();
-export {};

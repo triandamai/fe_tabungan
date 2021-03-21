@@ -4,14 +4,16 @@ import firebase from "firebase/app";
 import apiServices from "../services/Services";
 
 import { useRouter } from "vue-router";
-import { IUser } from "../services/Type";
+import { ICount, ISavings, IUser } from "../services/Type";
 
 interface IUserState {
   email: string;
   password: string;
   authSuccess: boolean;
   isProgressing: boolean;
+  savings: ISavings;
   profil: IUser;
+  count: ICount;
 }
 
 const userState = reactive<IUserState>({
@@ -19,6 +21,15 @@ const userState = reactive<IUserState>({
   password: "",
   authSuccess: false,
   isProgressing: false,
+  savings: {
+    _id: "",
+    savingId: "",
+    userId: "",
+    description: "",
+    createdBy: "",
+    createdAt: 0,
+    updatedAt: 0,
+  },
   profil: {
     _id: "",
     uid: "",
@@ -28,6 +39,10 @@ const userState = reactive<IUserState>({
     password: "",
     createdAt: 0,
     updatedAt: 0,
+  },
+  count: {
+    savingId: "",
+    total: 0,
   },
 });
 
@@ -87,7 +102,11 @@ function useUser() {
       const { success, data } = await apiServices.getProfil(
         `/user/profile/${user.uid}`
       );
-      if (success) userState.profil = data[0].user;
+      if (success) {
+        userState.profil = data[0].user;
+        userState.savings = data[0].saving;
+        if (data[0].count.length > 0) userState.count = data[0].count[0];
+      }
     });
   }
 

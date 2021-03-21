@@ -15,7 +15,7 @@
     </div>
     <h1 class="text-lg text-white my-4">Transaksi</h1>
     <no-data
-      v-if="TabunganState.tabungans.length < 1"
+      v-if="depositState.listdeposit.length < 1"
       :title="'Belum ada apapun'"
       :text="'karena kamu belum mulai menabung apapun yuk mulai nabung..'"
       :button="'Mulai nabung'"
@@ -23,7 +23,7 @@
     />
     <div v-else class="pb-30">
       <card-transaction
-        v-for="(item, index) in TabunganState.tabungans"
+        v-for="(item, index) in depositState.listdeposit"
         :key="index"
         :tabungan="item"
       />
@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { useTabungan } from "../../data/TabunganState";
+import { useTabungan } from "../../data/SavingState";
 import CardTransaction from "../../components/CardTransaction.vue";
 import NoData from "../../components/NoData.vue";
 import { useRouter } from "vue-router";

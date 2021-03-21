@@ -44,6 +44,14 @@ export interface IDeposit {
   updatedAt: Number;
 }
 
+export interface IFormDeposit {
+  nominal: string;
+  description: string;
+  receipt: any;
+  receiptname: string;
+  filename: string;
+  tabungantype: string;
+}
 export interface IResponse {
   success: boolean;
   data: any;
