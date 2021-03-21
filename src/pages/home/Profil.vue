@@ -28,7 +28,7 @@
             <h4
               class="font-medium text-2xl text-white mb-5 flex lg:flex-row flex-col items-center lg:justify-start justify-center"
             >
-              {{ UserState.profil.name }}
+              {{ userState.profil.name }}
             </h4>
 
             <p
@@ -42,7 +42,7 @@
             <h4
               class="font-medium text-2xl text-white mb-5 flex lg:flex-row flex-col items-center lg:justify-start justify-center"
             >
-              {{ UserState.profil.email }}
+              {{ userState.profil.email }}
             </h4>
 
             <p
@@ -61,7 +61,7 @@
         <p
           class="mb-6 text-base leading-7 tracking-wide inline-block sm:hidden caption-content-3-3"
         >
-          {{ UserState.profil.uid }}
+          {{ userState.profil.uid }}
         </p>
       </div>
     </div>
@@ -69,25 +69,18 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { auth } from "../../services/FirebaseServices";
-import { useRouter } from "vue-router";
+
 import { useUser } from "../../data/UserState";
 
 export default defineComponent({
   setup() {
-    const router = useRouter();
-    const { getProfil, UserState } = useUser();
+    const { getProfil } = useUser();
     onMounted(() => {
       getProfil();
     });
-    function signOut() {
-      auth.signOut().finally(() => {
-        router.replace({ path: "/login" });
-      });
-    }
+
     return {
-      signOut,
-      UserState,
+      ...useUser(),
     };
   },
 });

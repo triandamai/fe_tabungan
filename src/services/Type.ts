@@ -43,3 +43,9 @@ export interface IDeposit {
   createdAt: Number;
   updatedAt: Number;
 }
+
+export interface IResponse {
+  success: boolean;
+  data: any;
+  message?: string;
+}

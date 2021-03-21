@@ -57,7 +57,7 @@
                   </svg>
                   <input
                     type="email"
-                    v-model="UserState.email"
+                    v-model="userState.email"
                     placeholder="Your Email Address"
                     class="w-full focus:outline-none text-base font-light"
                     autocomplete
@@ -90,17 +90,17 @@
                   </svg>
                   <input
                     type="password"
-                    v-model="UserState.password"
+                    v-model="userState.password"
                     placeholder="Your Password"
                     minlength="6"
                     class="w-full focus:outline-none text-base font-light"
                     required
                     style="background-color: #252332"
                   />
-                  <div @click="UserState.authSuccess = !UserState.authSuccess">
+                  <div @click="userState.authSuccess = !userState.authSuccess">
                     <svg
                       :class="{
-                        'icon-toggle-empty-3-6': UserState.authSuccess,
+                        'icon-toggle-empty-3-6': userState.authSuccess,
                       }"
                       class="ml-3 cursor-pointer"
                       width="20"
@@ -192,14 +192,14 @@ export default defineComponent({
       startAuthGoogle,
       startLoginBasic,
       getResultFromRedirect,
-      UserState,
+      userState,
     } = useUser();
     onBeforeMount(() => {
       getResultFromRedirect();
       // api.get({ path: "/api/users" });
     });
     return {
-      UserState,
+      userState,
       startAuthGoogle,
       startLoginBasic,
     };

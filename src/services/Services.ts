@@ -1,18 +1,20 @@
 import axios from "axios";
-import { BaseType, IDeposit, IProfile, ISavings, IUser } from "./Type";
+import {
+  BaseType,
+  IDeposit,
+  IProfile,
+  ISavings,
+  IUser,
+  IResponse,
+} from "./Type";
 
-interface IResponse {
-  success: boolean;
-  data: any;
-  message?: string;
-}
 class Service {
   BASE_URL = /*"https://trianapp.herokuapp.com";*/ "http://localhost:3000";
 
   get(path: string): Promise<IResponse> {
     return new Promise((resolve) => {
       axios
-        .get(path)
+        .get(`${this.BASE_URL}${path}`)
         .then((response) => {
           if (
             response.data.statusCode == 200 ||
@@ -20,19 +22,23 @@ class Service {
           ) {
             resolve({
               success: true,
-              data: response.data.data,
+              data: { success: true, data: response.data.data },
               message: response.data.message,
             });
           } else {
             resolve({
               success: false,
-              data: [],
+              data: { success: false, data: [] },
               message: response.data.message,
             });
           }
         })
         .catch((error) => {
-          resolve({ success: false, data: error, message: `${error}` });
+          resolve({
+            success: false,
+            data: { success: false, data: [] },
+            message: `${error}`,
+          });
         });
     });
   }
@@ -49,15 +55,26 @@ class Service {
             response.data.statusCode == 200 ||
             response.data.statusCode == 201
           ) {
+            resolve({
+              success: true,
+              data: { success: true, data: response.data.data },
+              message: response.data.message,
+            });
           } else {
             resolve({
               success: false,
-              data: [],
+              data: { success: false, data: [] },
               message: response.data.message,
             });
           }
         })
-        .catch((error) => {});
+        .catch((error) => {
+          resolve({
+            success: false,
+            data: { success: false, data: [] },
+            message: `${error}`,
+          });
+        });
     });
   }
 
@@ -86,9 +103,10 @@ class Service {
    */
   register(body: any): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
-      this.post("/user/register", body).then((result) => {
+      this.post("/user/register", body).then((result: IResponse) => {
         if (result.success) {
           const data: BaseType<IUser> = result.data;
+          console.log(data);
           this.saveUser(data.data[0]);
           resolve({ success: true, data: data.data });
         } else {
@@ -164,10 +182,22 @@ class Service {
       });
     });
   }
-
+  /**
+   *
+   * @param path
+   * @param body
+   * @returns
+   */
   createDeposit(path: string, body: any): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
-      this.post(path, body).then((result: IResponse) => {});
+      this.post(path, body).then((result: IResponse) => {
+        if (result.success) {
+          const data: BaseType<IDeposit> = result.data;
+          resolve({ success: true, data: data.data });
+        } else {
+          resolve({ success: false, data: [] });
+        }
+      });
     });
   }
   /**

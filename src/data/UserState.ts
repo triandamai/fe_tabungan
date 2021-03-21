@@ -4,6 +4,7 @@ import firebase from "firebase/app";
 import apiServices from "../services/Services";
 
 import { useRouter } from "vue-router";
+import { IUser } from "../services/Type";
 
 interface IUserState {
   email: string;
@@ -12,57 +13,51 @@ interface IUserState {
   isProgressing: boolean;
   profil: IUser;
 }
-interface IUser {
-  _id?: string;
-  __v?: any;
-  uid: string;
-  name: string;
-  email: string;
-  password: string;
-  created: Number;
-  updated: Number;
-}
-const UserState = reactive<IUserState>({
+
+const userState = reactive<IUserState>({
   email: "",
   password: "",
   authSuccess: false,
   isProgressing: false,
   profil: {
+    _id: "",
     uid: "",
     name: "",
     email: "",
+    gender: "",
     password: "",
-    created: 0,
-    updated: 0,
+    createdAt: 0,
+    updatedAt: 0,
   },
 });
 
 function useUser() {
+  const router = useRouter();
   function startAuthGoogle() {
-    UserState.isProgressing = true;
+    userState.isProgressing = true;
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithRedirect(provider);
   }
   async function startLoginBasic() {
-    UserState.isProgressing = true;
+    userState.isProgressing = true;
     const router = useRouter();
     const { success, data } = await apiServices.login(
-      JSON.stringify({ email: UserState.email, password: UserState.password })
+      JSON.stringify({ email: userState.email, password: userState.password })
     );
-    UserState.isProgressing = false;
-    UserState.authSuccess = success;
+    userState.isProgressing = false;
+    userState.authSuccess = success;
     if (success) {
       router.push({ path: "/main/dashboard" });
     } else {
     }
   }
   async function getResultFromRedirect() {
-    UserState.isProgressing = true;
+    userState.isProgressing = true;
     const router = useRouter();
     const { user, additionalUserInfo } = await auth.getRedirectResult();
 
-    UserState.isProgressing = false;
-    if (user)
+    if (user) {
+      userState.isProgressing = false;
       if (additionalUserInfo?.isNewUser) {
         const { success, data } = await apiServices.register({
           email: user.email,
@@ -71,33 +66,44 @@ function useUser() {
           uid: user.uid,
           password: user.uid,
         });
-        UserState.authSuccess = success;
+
+        userState.authSuccess = success;
         if (success) router.push({ path: "/main/dashboard" });
       } else {
         const { success, data } = await apiServices.login({
           email: user.email,
           password: user.uid,
         });
-        UserState.authSuccess = success;
+        userState.authSuccess = success;
         if (success) router.push({ path: "/main/dashboard" });
       }
-    else UserState.authSuccess = false;
+    } else {
+      userState.authSuccess = false;
+    }
   }
 
   function getProfil() {
     getCurrentUser().then(async (user: any) => {
-      const { success, data } = await apiServices.get(
-        "/api/user/order/" + user.uid
+      const { success, data } = await apiServices.getProfil(
+        `/user/profile/${user.uid}`
       );
+      if (success) userState.profil = data[0].user;
+    });
+  }
+
+  function signOut() {
+    auth.signOut().finally(() => {
+      router.push({ path: "/login" });
     });
   }
 
   return {
-    UserState,
+    userState,
     startAuthGoogle,
     startLoginBasic,
     getResultFromRedirect,
     getProfil,
+    signOut,
   };
 }
 export { useUser };
