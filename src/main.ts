@@ -5,6 +5,10 @@ import { getCurrentUser } from "./services/FirebaseServices";
 import "./assets/app.css";
 import "virtual:windi.css";
 
+/**
+ * adds
+ */
+
 router.beforeEach(async (_, from, next) => {
   if (_.meta.requireAuth) {
     const user = await getCurrentUser();
