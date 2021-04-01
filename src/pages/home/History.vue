@@ -19,7 +19,7 @@
       :title="'Belum ada apapun'"
       :text="'karena kamu belum mulai menabung apapun yuk mulai nabung..'"
       :button="'Mulai nabung'"
-      :link="'/deposit'"
+      :link="userState.savings == null ? '/create' : '/deposit'"
     />
     <div v-else class="pb-30">
       <card-transaction
@@ -33,6 +33,7 @@
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
 import { useTabungan } from "../../data/SavingState";
+import { useUser } from "../../data/UserState";
 import CardTransaction from "../../components/CardTransaction.vue";
 import NoData from "../../components/NoData.vue";
 import { useRouter } from "vue-router";
@@ -50,6 +51,7 @@ export default defineComponent({
     });
     return {
       ...useTabungan(),
+      ...useUser(),
       router,
     };
   },

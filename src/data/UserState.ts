@@ -99,9 +99,7 @@ function useUser() {
 
   function getProfil() {
     getCurrentUser().then(async (user: any) => {
-      const { success, data } = await apiServices.getProfil(
-        `/user/profile/${user.uid}`
-      );
+      const { success, data } = await apiServices.getProfil(`${user.uid}`);
       if (success) {
         userState.profil = data[0].user;
         userState.savings = data[0].saving;

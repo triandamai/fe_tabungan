@@ -69,7 +69,26 @@ const router = createRouter({
     {
       path: "/deposit",
       name: "Deposit",
-      component: () => import("./pages/Deposit.vue"),
+      component: () => import("./pages/FormSaving.vue"),
+      meta: {
+        requireAuth: true,
+        title: "Home Page - Tabungan App",
+        metaTags: [
+          {
+            name: "description",
+            content: "The home page of our example app.",
+          },
+          {
+            property: "og:description",
+            content: "The home page of our example app.",
+          },
+        ],
+      },
+    },
+    {
+      path: "/create",
+      name: "CreateSaving",
+      component: () => import("./pages/CreateSaving.vue"),
       meta: {
         requireAuth: true,
         title: "Home Page - Tabungan App",

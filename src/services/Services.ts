@@ -9,7 +9,8 @@ import {
 } from "./Type";
 
 class Service {
-  BASE_URL = /*"https://trianapp.herokuapp.com";*/ "http://localhost:3000";
+  BASE_URL = "https://backend-942cf.web.app/";
+  //BASE_URL = "http://localhost:5000";
   KEY_USER = "zzaAbB";
   KEY_SAVING = "sSaAvViInNgG";
 
@@ -88,13 +89,11 @@ class Service {
   login(body: any): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
       this.post("/user/login", body).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<IUser> = result.data;
-          this.saveUser(data.data[0]);
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+        if (!result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<IUser> = result.data;
+        this.saveUser(data.data[0]);
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -106,14 +105,11 @@ class Service {
   register(body: any): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
       this.post("/user/register", body).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<IUser> = result.data;
+        if (!result.success) return resolve(result);
 
-          this.saveUser(data.data[0]);
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve(result);
-        }
+        const data: BaseType<IUser> = result.data;
+        this.saveUser(data.data[0]);
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -122,17 +118,14 @@ class Service {
    * @param path
    * @returns
    */
-  getProfil(path: string): Promise<BaseType<IProfile>> {
+  getProfil(param: string): Promise<BaseType<IProfile>> {
     return new Promise((resolve) => {
-      this.get(path).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<IProfile> = result.data;
-          if (data.data[0].saving)
-            this.saveSaving(data.data[0].saving.savingId);
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+      this.get(`/user/profile/${param}`).then((result: IResponse) => {
+        if (!result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<IProfile> = result.data;
+        if (data.data[0].saving) this.saveSaving(data.data[0].saving.savingId);
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -142,15 +135,13 @@ class Service {
    * @param path
    * @returns
    */
-  getMySaving(path: string): Promise<BaseType<ISavings>> {
+  getMySaving(param: string): Promise<BaseType<ISavings>> {
     return new Promise((resolve) => {
-      this.get(path).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<ISavings> = result.data;
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+      this.get(`/saving/${param}`).then((result: IResponse) => {
+        if (!result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<ISavings> = result.data;
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -160,15 +151,25 @@ class Service {
    * @param body
    * @returns
    */
-  createSaving(path: string, body: any): Promise<BaseType<ISavings>> {
+  createSaving(body: any): Promise<BaseType<ISavings>> {
     return new Promise((resolve) => {
-      this.post(path, body).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<ISavings> = result.data;
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+      this.post("/saving/create", body).then((result: IResponse) => {
+        if (!result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<ISavings> = result.data;
+        return resolve({ success: true, data: data.data });
+      });
+    });
+  }
+  /**
+   *
+   */
+  joinSaving(body: any): Promise<BaseType<ISavings>> {
+    return new Promise((resolve) => {
+      this.post("/saving/join", body).then((result: IResponse) => {
+        if (!result.success) return resolve({ success: false, data: [] });
+        const data: BaseType<ISavings> = result.data;
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -177,15 +178,13 @@ class Service {
    * @param path
    * @returns
    */
-  getMyDeposit(path: string): Promise<BaseType<IDeposit>> {
+  getMyDeposit(param: string): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
-      this.get(path).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<IDeposit> = result.data;
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+      this.get(`/deposit/${param}`).then((result: IResponse) => {
+        if (!result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<IDeposit> = result.data;
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -194,15 +193,13 @@ class Service {
    * @param path
    * @returns
    */
-  getDepositById(path: string): Promise<BaseType<IDeposit>> {
+  getDepositById(param: string): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
-      this.get(path).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<IDeposit> = result.data;
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+      this.get(`/deposit/${param}`).then((result: IResponse) => {
+        if (!result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<IDeposit> = result.data;
+        return resolve({ success: true, data: data.data });
       });
     });
   }
@@ -212,20 +209,27 @@ class Service {
    * @param body
    * @returns
    */
-  createDeposit(path: string, body: any): Promise<BaseType<IDeposit>> {
+  createDeposit(body: any): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
-      this.post(path, body).then((result: IResponse) => {
-        if (result.success) {
-          const data: BaseType<IDeposit> = result.data;
-          resolve({ success: true, data: data.data });
-        } else {
-          resolve({ success: false, data: [] });
-        }
+      this.post("/deposit/create", body).then((result: IResponse) => {
+        if (result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<IDeposit> = result.data;
+        return resolve({ success: true, data: data.data });
       });
     });
   }
-  confirmationDeposit(path: string, body: any): Promise<BaseType<IDeposit>> {
-    return new Promise(() => {});
+  confirmationDeposit(param: string, body: any): Promise<BaseType<IDeposit>> {
+    return new Promise((resolve) => {
+      this.post(`/deposit/confirmation/${param}`, body).then(
+        (result: IResponse) => {
+          if (!result.success) return resolve({ success: false, data: [] });
+
+          const data: BaseType<IDeposit> = result.data;
+          return resolve({ success: true, data: data.data });
+        }
+      );
+    });
   }
   /**
    *

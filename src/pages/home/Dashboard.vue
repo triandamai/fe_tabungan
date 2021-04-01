@@ -30,7 +30,7 @@
       :title="'Belum ada apapun'"
       :text="'karena kamu belum mulai menabung apapun yuk mulai nabung..'"
       :button="'Mulai nabung'"
-      :link="'/deposit'"
+      :link="userState.savings == null ? '/create' : '/deposit'"
     />
     <div v-else class="pb-20">
       <card-transaction

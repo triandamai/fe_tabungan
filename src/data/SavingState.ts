@@ -88,7 +88,7 @@ function useTabungan() {
    */
   async function getAllDeposit() {
     const { success, data } = await apiServices.getMyDeposit(
-      `/deposit/${apiServices.getSaving()}`
+      `${apiServices.getSaving()}`
     );
 
     if (success) {
@@ -101,7 +101,7 @@ function useTabungan() {
     return new Promise(async (resolve) => {
       showLoading();
       const { success, data } = await apiServices.getDepositById(
-        `/deposit/${route.params.id}`
+        `${route.params.id}`
       );
 
       if (success) {
@@ -124,7 +124,7 @@ function useTabungan() {
 
     hideLoading();
 
-    const { success, data } = await apiServices.createDeposit("", {});
+    const { success, data } = await apiServices.createDeposit({});
 
     if (success) {
       showSuccess();
