@@ -2,6 +2,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/analytics";
 import "firebase/storage";
+import { ICurrentUser } from "./Type";
+import service from "./Services";
 
 const firebaseApp = firebase.initializeApp({
   apiKey: "AIzaSyBOo-s1-i_BcxU4EobnITuFW92wUVxWt2Q",
@@ -17,10 +19,20 @@ firebaseApp.analytics();
 
 const auth = firebaseApp.auth();
 const storage = firebaseApp.storage();
-function getCurrentUser() {
+function getCurrentUser(): Promise<ICurrentUser> {
   return new Promise((resolve, reject) => {
     auth.onAuthStateChanged((user) => {
-      resolve(user);
+      if (!user)
+        return resolve({
+          uid: service.getUser().uid,
+          name: service.getUser().name,
+          email: service.getUser().email,
+        });
+      return resolve({
+        uid: user?.uid,
+        email: user?.email,
+        name: user?.displayName,
+      });
     }, reject);
   });
 }

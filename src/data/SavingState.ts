@@ -2,7 +2,7 @@ import { reactive } from "@vue/reactivity";
 import { useRouter, useRoute } from "vue-router";
 import { getCurrentUser, uploadReceipt } from "../services/FirebaseServices";
 import apiServices from "../services/Services";
-import { IDeposit, IFormDeposit } from "../services/Type";
+import { ICurrentUser, IDeposit, IFormDeposit } from "../services/Type";
 import { useUser } from "./UserState";
 
 interface IDepositState {
@@ -11,6 +11,7 @@ interface IDepositState {
   isLoading: boolean;
   isResultDialog: boolean;
   dialogType: "success" | "failed" | "loading";
+  codeSaving: string;
 }
 
 const depositState = reactive<IDepositState>({
@@ -26,6 +27,7 @@ const depositState = reactive<IDepositState>({
     tabungantype: "",
     filename: "Pilih",
   },
+  codeSaving: "",
 });
 
 function useSaving() {
@@ -88,12 +90,12 @@ function useSaving() {
    */
   async function createSaving() {
     showLoading();
+    const user: ICurrentUser = await getCurrentUser();
     const { success, data } = await apiServices.createSaving({
-      _id: "",
-      userId: "",
-      savingId: "",
-      description: "",
-      createdBy: "",
+      userId: user.uid,
+      savingId: user.uid,
+      description: "New Saving",
+      createdBy: user.uid,
     });
 
     if (success) {
@@ -109,10 +111,11 @@ function useSaving() {
     }
   }
   async function joinSaving() {
+    const user: ICurrentUser = await getCurrentUser();
     const { success, data } = await apiServices.joinSaving({
-      savingId: "",
-      ownerId: "",
-      userId: "",
+      savingId: depositState.codeSaving,
+      ownerId: depositState.codeSaving,
+      userId: user.uid,
     });
     if (success) {
       hideLoading();
@@ -167,7 +170,7 @@ function useSaving() {
       filename: filename,
     })
       .then(async (receipt) => {
-        const user: any = await getCurrentUser();
+        const user: ICurrentUser = await getCurrentUser();
         const { success, data } = await apiServices.createDeposit({
           sender: user.uid,
           savingId: userState.savings.savingId,
@@ -207,7 +210,7 @@ function useSaving() {
       filename: depositState.formtabungan.filename,
     })
       .then(async (receipt) => {
-        const user: any = await getCurrentUser();
+        const user: ICurrentUser = await getCurrentUser();
         const { success, data } = await apiServices.changeDeposit(id, {
           sender: user.uid,
           savingId: userState.savings.savingId,
@@ -237,7 +240,7 @@ function useSaving() {
 
   async function acceptDeposit(id: any) {
     showLoading();
-    const user: any = await getCurrentUser();
+    const user: ICurrentUser = await getCurrentUser();
     const { success, data } = await apiServices.confirmationDeposit(
       id,
       `${user.uid}`

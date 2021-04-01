@@ -21,6 +21,11 @@ export interface IUser {
   createdAt?: Number;
   updatedAt?: Number;
 }
+export interface ICurrentUser {
+  uid: string | any;
+  name: string | any;
+  email: string | any;
+}
 export interface ISavings {
   _id?: string;
   savingId: string;

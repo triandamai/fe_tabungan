@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import apiServices from "../services/Services";
 
 import { useRouter } from "vue-router";
-import { ICount, ISavings, IUser } from "../services/Type";
+import { ICount, ICurrentUser, ISavings, IUser } from "../services/Type";
 
 interface IUserState {
   email: string;
@@ -99,7 +99,7 @@ function useUser() {
   }
 
   function getProfil() {
-    getCurrentUser().then(async (user: any) => {
+    getCurrentUser().then(async (user: ICurrentUser) => {
       const { success, data } = await apiServices.getProfil(`${user.uid}`);
       if (success) {
         userState.profil = data[0].user;
