@@ -226,6 +226,17 @@ class Service {
       });
     });
   }
+
+  changeDeposit(param: string, body: IDeposit): Promise<BaseType<IDeposit>> {
+    return new Promise((resolve) => {
+      this.post(`/deposit/update${param}`, body).then((result: IResponse) => {
+        if (result.success) return resolve({ success: false, data: [] });
+
+        const data: BaseType<IDeposit> = result.data;
+        return resolve({ success: true, data: data.data });
+      });
+    });
+  }
   confirmationDeposit(param: string, uid: any): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
       this.post(`/deposit/confirmation/${param}`, { uid: uid }).then(

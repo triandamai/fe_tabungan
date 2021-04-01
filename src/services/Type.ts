@@ -37,7 +37,7 @@ export interface IDeposit {
   nominal: Number;
   receipt: string;
   accepted: string;
-  type: string;
+  type: "deposit" | "spending";
   receiptname: string;
   description: string;
   createdAt?: Number;
@@ -45,7 +45,7 @@ export interface IDeposit {
 }
 
 export interface IFormDeposit {
-  nominal: Number | string;
+  nominal: Number | string | any;
   description: string;
   receipt: any;
   receiptname: string;

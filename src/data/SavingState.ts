@@ -161,21 +161,22 @@ function useSaving() {
     )
       return;
     showLoading();
+    const filename = `${Date.now()}.jpg`;
     uploadReceipt({
       file: depositState.formtabungan.receipt,
-      filename: `${Date.now()}.jpg`,
+      filename: filename,
     })
       .then(async (receipt) => {
         const user: any = await getCurrentUser();
         const { success, data } = await apiServices.createDeposit({
-          sender: "",
-          savingId: "",
-          nominal: 0,
-          receipt: "",
+          sender: user.uid,
+          savingId: userState.savings.savingId,
+          nominal: depositState.formtabungan.nominal,
+          receipt: `${receipt}`,
           accepted: "",
-          type: "",
-          receiptname: "",
-          description: "",
+          type: "deposit",
+          receiptname: filename,
+          description: depositState.formtabungan.description,
         });
 
         if (success) {
@@ -193,9 +194,54 @@ function useSaving() {
         showFailed();
       });
   }
-  async function acceptDeposit(uid: any, id: any) {
+  async function updateDeposit(id: string) {
+    if (
+      !depositState.formtabungan.nominal &&
+      !depositState.formtabungan.description &&
+      !depositState.formtabungan.receipt
+    )
+      return;
     showLoading();
-    const { success, data } = await apiServices.confirmationDeposit("", {});
+    uploadReceipt({
+      file: depositState.formtabungan.receipt,
+      filename: depositState.formtabungan.filename,
+    })
+      .then(async (receipt) => {
+        const user: any = await getCurrentUser();
+        const { success, data } = await apiServices.changeDeposit(id, {
+          sender: user.uid,
+          savingId: userState.savings.savingId,
+          nominal: depositState.formtabungan.nominal,
+          receipt: `${receipt}`,
+          accepted: "",
+          type: "deposit",
+          receiptname: depositState.formtabungan.receiptname,
+          description: depositState.formtabungan.description,
+        });
+
+        if (success) {
+          hideLoading();
+          showSuccess();
+          resetForm();
+        } else {
+          hideLoading();
+
+          showFailed();
+        }
+      })
+      .catch(() => {
+        hideLoading();
+        showFailed();
+      });
+  }
+
+  async function acceptDeposit(id: any) {
+    showLoading();
+    const user: any = await getCurrentUser();
+    const { success, data } = await apiServices.confirmationDeposit(
+      id,
+      `${user.uid}`
+    );
     hideLoading();
     if (success) {
       showSuccess();
