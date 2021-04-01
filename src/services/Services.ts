@@ -9,8 +9,8 @@ import {
 } from "./Type";
 
 class Service {
-  BASE_URL = "https://backend-942cf.web.app/";
-  //BASE_URL = "http://localhost:5000";
+  // BASE_URL = "https://backend-942cf.web.app/";
+  BASE_URL = "http://localhost:5000";
   KEY_USER = "zzaAbB";
   KEY_SAVING = "sSaAvViInNgG";
 

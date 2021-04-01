@@ -45,7 +45,7 @@ export interface IDeposit {
 }
 
 export interface IFormDeposit {
-  nominal: string;
+  nominal: Number | string;
   description: string;
   receipt: any;
   receiptname: string;

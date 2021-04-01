@@ -139,7 +139,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useTabungan } from "../data/SavingState";
+import { useSaving } from "../data/SavingState";
 
 import BaseDialog from "../components/DialogBase.vue";
 import DialogResult from "../components/DialogResult.vue";
@@ -156,7 +156,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      ...useTabungan(),
+      ...useSaving(),
     };
   },
 });

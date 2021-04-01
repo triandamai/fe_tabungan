@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { useTabungan } from "../../data/SavingState";
+import { useSaving } from "../../data/SavingState";
 import { useUser } from "../../data/UserState";
 import CardTransaction from "../../components/CardTransaction.vue";
 import NoData from "../../components/NoData.vue";
@@ -45,12 +45,12 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const { getAllDeposit } = useTabungan();
+    const { getAllDeposit } = useSaving();
     onMounted(() => {
       getAllDeposit();
     });
     return {
-      ...useTabungan(),
+      ...useSaving(),
       ...useUser(),
       router,
     };

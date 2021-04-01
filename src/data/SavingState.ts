@@ -28,7 +28,7 @@ const depositState = reactive<IDepositState>({
   },
 });
 
-function useTabungan() {
+function useSaving() {
   /**
    * var
    */
@@ -86,6 +86,36 @@ function useTabungan() {
    * manipulate data
    * send data,retrieve data,accept data etc
    */
+  async function createSaving() {
+    showLoading();
+    const { success, data } = await apiServices.createSaving({});
+
+    if (success) {
+      hideLoading();
+      showSuccess();
+      if (data) {
+        userState.savings = data[0];
+      }
+    }
+    if (!success) {
+      hideLoading();
+      showFailed();
+    }
+  }
+  async function joinSaving() {
+    const { success, data } = await apiServices.joinSaving({});
+    if (success) {
+      hideLoading();
+      showSuccess();
+      if (data) {
+        userState.savings = data[0];
+      }
+    }
+    if (!success) {
+      hideLoading();
+      showFailed();
+    }
+  }
   async function getAllDeposit() {
     const { success, data } = await apiServices.getMyDeposit(
       `${apiServices.getSaving()}`
@@ -106,6 +136,7 @@ function useTabungan() {
 
       if (success) {
         hideLoading();
+        depositState.formtabungan.nominal = data[0].nominal;
       } else {
         hideLoading();
       }
@@ -158,7 +189,8 @@ function useTabungan() {
     acceptDeposit,
     sendSpending,
     acceptSpending,
-
+    createSaving,
+    joinSaving,
     onImagePicked,
     showFailed,
     showSuccess,
@@ -173,4 +205,4 @@ function useTabungan() {
   };
 }
 
-export { useTabungan };
+export { useSaving };

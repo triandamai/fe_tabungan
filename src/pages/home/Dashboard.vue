@@ -44,7 +44,7 @@
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
 
-import { useTabungan } from "../../data/SavingState";
+import { useSaving } from "../../data/SavingState";
 import { useCurrency } from "../../common/Currency";
 
 import CardTransaction from "../../components/CardTransaction.vue";
@@ -57,12 +57,12 @@ export default defineComponent({
     NoData,
   },
   setup() {
-    const { getAllDeposit } = useTabungan();
+    const { getAllDeposit } = useSaving();
     onMounted(() => {
       getAllDeposit();
     });
     return {
-      ...useTabungan(),
+      ...useSaving(),
       ...useCurrency(),
       ...useUser(),
     };
