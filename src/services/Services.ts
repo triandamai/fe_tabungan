@@ -86,7 +86,10 @@ class Service {
    * @param body
    * @returns
    */
-  login(body: any): Promise<BaseType<IUser>> {
+  login(body: {
+    email: string | any;
+    password: string;
+  }): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
       this.post("/user/login", body).then((result: IResponse) => {
         if (!result.success) return resolve({ success: false, data: [] });
@@ -102,7 +105,7 @@ class Service {
    * @param body
    * @returns
    */
-  register(body: any): Promise<BaseType<IUser>> {
+  register(body: IUser): Promise<BaseType<IUser>> {
     return new Promise((resolve) => {
       this.post("/user/register", body).then((result: IResponse) => {
         if (!result.success) return resolve(result);
@@ -151,7 +154,7 @@ class Service {
    * @param body
    * @returns
    */
-  createSaving(body: any): Promise<BaseType<ISavings>> {
+  createSaving(body: ISavings): Promise<BaseType<ISavings>> {
     return new Promise((resolve) => {
       this.post("/saving/create", body).then((result: IResponse) => {
         if (!result.success) return resolve({ success: false, data: [] });
@@ -164,7 +167,11 @@ class Service {
   /**
    *
    */
-  joinSaving(body: any): Promise<BaseType<ISavings>> {
+  joinSaving(body: {
+    savingId: string;
+    userId: string;
+    ownerId: string;
+  }): Promise<BaseType<ISavings>> {
     return new Promise((resolve) => {
       this.post("/saving/join", body).then((result: IResponse) => {
         if (!result.success) return resolve({ success: false, data: [] });
@@ -209,7 +216,7 @@ class Service {
    * @param body
    * @returns
    */
-  createDeposit(body: any): Promise<BaseType<IDeposit>> {
+  createDeposit(body: IDeposit): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
       this.post("/deposit/create", body).then((result: IResponse) => {
         if (result.success) return resolve({ success: false, data: [] });
@@ -219,9 +226,9 @@ class Service {
       });
     });
   }
-  confirmationDeposit(param: string, body: any): Promise<BaseType<IDeposit>> {
+  confirmationDeposit(param: string, uid: any): Promise<BaseType<IDeposit>> {
     return new Promise((resolve) => {
-      this.post(`/deposit/confirmation/${param}`, body).then(
+      this.post(`/deposit/confirmation/${param}`, { uid: uid }).then(
         (result: IResponse) => {
           if (!result.success) return resolve({ success: false, data: [] });
 

@@ -1,6 +1,6 @@
 import { reactive } from "@vue/reactivity";
 import { useRouter, useRoute } from "vue-router";
-import { getCurrentUser } from "../services/FirebaseServices";
+import { getCurrentUser, uploadReceipt } from "../services/FirebaseServices";
 import apiServices from "../services/Services";
 import { IDeposit, IFormDeposit } from "../services/Type";
 import { useUser } from "./UserState";
@@ -88,7 +88,13 @@ function useSaving() {
    */
   async function createSaving() {
     showLoading();
-    const { success, data } = await apiServices.createSaving({});
+    const { success, data } = await apiServices.createSaving({
+      _id: "",
+      userId: "",
+      savingId: "",
+      description: "",
+      createdBy: "",
+    });
 
     if (success) {
       hideLoading();
@@ -103,7 +109,11 @@ function useSaving() {
     }
   }
   async function joinSaving() {
-    const { success, data } = await apiServices.joinSaving({});
+    const { success, data } = await apiServices.joinSaving({
+      savingId: "",
+      ownerId: "",
+      userId: "",
+    });
     if (success) {
       hideLoading();
       showSuccess();
@@ -151,19 +161,37 @@ function useSaving() {
     )
       return;
     showLoading();
-    const user: any = await getCurrentUser();
+    uploadReceipt({
+      file: depositState.formtabungan.receipt,
+      filename: `${Date.now()}.jpg`,
+    })
+      .then(async (receipt) => {
+        const user: any = await getCurrentUser();
+        const { success, data } = await apiServices.createDeposit({
+          sender: "",
+          savingId: "",
+          nominal: 0,
+          receipt: "",
+          accepted: "",
+          type: "",
+          receiptname: "",
+          description: "",
+        });
 
-    hideLoading();
+        if (success) {
+          hideLoading();
+          showSuccess();
+          resetForm();
+        } else {
+          hideLoading();
 
-    const { success, data } = await apiServices.createDeposit({});
-
-    if (success) {
-      showSuccess();
-      resetForm();
-    } else {
-      depositState.dialogType = "failed";
-      showFailed();
-    }
+          showFailed();
+        }
+      })
+      .catch(() => {
+        hideLoading();
+        showFailed();
+      });
   }
   async function acceptDeposit(uid: any, id: any) {
     showLoading();

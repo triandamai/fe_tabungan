@@ -12,26 +12,26 @@ export interface ICount {
   total: Number;
 }
 export interface IUser {
-  _id: string;
+  _id?: string;
   uid: string;
-  name: string;
-  email: string;
+  name: string | any;
+  email: string | any;
   password: string;
   gender: string;
-  createdAt: Number;
-  updatedAt: Number;
+  createdAt?: Number;
+  updatedAt?: Number;
 }
 export interface ISavings {
-  _id: string;
+  _id?: string;
   savingId: string;
   userId: string;
   description: string;
   createdBy: string;
-  createdAt: Number;
-  updatedAt: Number;
+  createdAt?: Number;
+  updatedAt?: Number;
 }
 export interface IDeposit {
-  _id: string;
+  _id?: string;
   sender: string;
   savingId: string;
   nominal: Number;
@@ -40,8 +40,8 @@ export interface IDeposit {
   type: string;
   receiptname: string;
   description: string;
-  createdAt: Number;
-  updatedAt: Number;
+  createdAt?: Number;
+  updatedAt?: Number;
 }
 
 export interface IFormDeposit {

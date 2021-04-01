@@ -56,9 +56,10 @@ function useUser() {
   async function startLoginBasic() {
     userState.isProgressing = true;
     const router = useRouter();
-    const { success, data } = await apiServices.login(
-      JSON.stringify({ email: userState.email, password: userState.password })
-    );
+    const { success, data } = await apiServices.login({
+      email: userState.email,
+      password: userState.password,
+    });
     userState.isProgressing = false;
     userState.authSuccess = success;
     if (success) {
