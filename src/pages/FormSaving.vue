@@ -99,7 +99,7 @@
                   />
                 </div>
               </div>
-              <!-- <div class="mt-4">
+              <div class="mt-4">
                 <label class="block text-lg font-medium" style="color: #d8d7df"
                   >Struk</label
                 >
@@ -131,7 +131,7 @@
                   <label
                     for="file"
                     class="font-light text-sm text-gray-500 truncate min-w-2/3"
-                    >{{ TabunganState.formtabungan.filename }}
+                    >{{ depositState.formtabungan.filename }}
                   </label>
                   <input
                     type="file"
@@ -143,7 +143,7 @@
                     style="background-color: #252332"
                   />
                 </div>
-              </div> -->
+              </div>
 
               <button
                 type="submit"
@@ -210,7 +210,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useTabungan } from "../data/SavingState";
+import { useSaving } from "../data/SavingState";
 
 import BaseDialog from "../components/DialogBase.vue";
 import DialogResult from "../components/DialogResult.vue";
@@ -227,7 +227,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      ...useTabungan(),
+      ...useSaving(),
     };
   },
 });

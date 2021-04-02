@@ -57,7 +57,7 @@
                   </svg>
                   <input
                     type="text"
-                    v-model="depositState.formtabungan.description"
+                    v-model="depositState.codeSaving"
                     placeholder="Kode tabungan"
                     class="w-full focus:outline-none text-base font-light"
                     autocomplete
@@ -75,6 +75,7 @@
                   Gabung
                 </button>
                 <button
+                  @click="createSaving()"
                   class="ml-2 block border-gray-500 border-1 w-full px-4 py-3 mt-9 font-medium text-xl text-white transition duration-500 ease-in-out transform rounded-xl hover:bg-gray-800 hover:to-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2"
                 >
                   Bikin baru
@@ -115,10 +116,10 @@
       <dialog-result
         v-if="isDialogSuccess()"
         :title="'Yeeey...'"
-        :message="' Bagus! kamu berhasil nabung nih,mau nabung lagi ?'"
-        :positive="'Oke nabung lagi'"
-        :negative="'Engga Besok lagi'"
-        @onPositive="dismiss()"
+        :message="'Berhasil '"
+        :positive="'Mulai menabung'"
+        :negative="'oke kembali'"
+        @onPositive="goTo('/deposit')"
         @onNegative="gotoHome()"
         ><div>
           <icon-success /></div
@@ -146,6 +147,7 @@ import DialogResult from "../components/DialogResult.vue";
 import IconSuccess from "../components/icon/Transfer.vue";
 import IconFailed from "../components/icon/NotFound.vue";
 import DialogLoading from "../components/DialogLoading.vue";
+import { useRouter } from "vue-router";
 export default defineComponent({
   components: {
     BaseDialog,
@@ -155,14 +157,14 @@ export default defineComponent({
     IconFailed,
   },
   setup() {
+    const router = useRouter();
+    function goTo(path: string) {
+      router.push({ path: path });
+    }
     return {
+      goTo,
       ...useSaving(),
     };
   },
 });
 </script>
-<style scoped>
-.inputFile {
-  opacity: 0;
-}
-</style>
